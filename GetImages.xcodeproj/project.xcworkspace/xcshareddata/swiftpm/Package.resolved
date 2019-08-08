@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Tangerine",
+        "repositoryURL": "https://github.com/RuiAAPeres/Tangerine",
+        "state": {
+          "branch": "master",
+          "revision": "3ae15bbd7757c6807561b25c99ce38f9472a6e63",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
