@@ -37,7 +37,6 @@ struct CellRow: View {
         HStack {
             Text(title)
                 .padding(8)
-            Spacer()
             fetcher.image.map {
                 Image(uiImage: $0)
                     .resizable()
@@ -57,7 +56,7 @@ struct Element: Identifiable {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView(viewModel: ViewModel())
+        ListView(viewModel: ViewModel(manager: FakeNetworkLayer()))
     }
 }
 #endif

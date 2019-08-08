@@ -6,6 +6,7 @@
 //  Copyright © 2019 Alessio Roberto. All rights reserved.
 //
 
+import Combine
 import Tangerine
 import SwiftUI
 
@@ -16,15 +17,36 @@ struct CellRowElement: Identifiable {
 }
 
 struct ViewModel {
-    private let elements: [Element] = [
-        Element(name: "A", thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"),
-        Element(name: "B", thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"),
-    ]
 
+    @ObservedObject var manager: FakeNetworkLayer
+    
     func getLits() -> [CellRowElement] {
-        return elements.map { (element) -> CellRowElement in
+        
+        return manager.elements.map { (element) -> CellRowElement in
             return CellRowElement(title: element.name,
                                   fetcher: ImageFetcher(url: URL(string: element.thumb)!))
         }
     }
+}
+
+protocol NetworkLayer: class {
+    func getData()
+}
+
+final class FakeNetworkLayer: NetworkLayer, ObservableObject {
+    var objectWillChange = PassthroughSubject<Void, Never>()
+    
+    let elements: [Element] = [
+        Element(name: "A", thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"),
+        Element(name: "B", thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"),
+    ]
+    
+    init() {
+        getData()
+    }
+    
+    func getData() {
+        objectWillChange.send()
+    }
+    
 }
