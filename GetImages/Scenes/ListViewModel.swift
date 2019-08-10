@@ -16,16 +16,23 @@ struct CellRowElement: Identifiable {
     var fetcher: ImageFetcher
 }
 
-struct ViewModel {
+final class ViewModel: ObservableObject {
 
-    @ObservedObject var manager: FakeNetworkLayer
+    @ObservedObject private var manager = FakeNetworkLayer()
+    var objectWillChange = PassthroughSubject<Void, Never>()
+    var list: [CellRowElement] = []
     
-    func getLits() -> [CellRowElement] {
-        
+    private func getLits() -> [CellRowElement] {
         return manager.elements.map { (element) -> CellRowElement in
             return CellRowElement(title: element.name,
                                   fetcher: ImageFetcher(url: URL(string: element.thumb)!))
         }
+    }
+
+    func addElement() {
+        manager.getData()
+        list = getLits()
+        objectWillChange.send()
     }
 }
 
@@ -36,16 +43,15 @@ protocol NetworkLayer: class {
 final class FakeNetworkLayer: NetworkLayer, ObservableObject {
     var objectWillChange = PassthroughSubject<Void, Never>()
     
-    let elements: [Element] = [
+    var elements: [Element] = [
         Element(name: "A", thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"),
         Element(name: "B", thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"),
     ]
     
-    init() {
-        getData()
-    }
-    
     func getData() {
+        let random = Int.random(in: Range(uncheckedBounds: (0, 100)))
+        elements.append(Element(name: "\(random)",
+                                thumb: "https://www.strongertogether.coop/sites/default/files/Tangerines.jpg"))
         objectWillChange.send()
     }
     

@@ -10,15 +10,24 @@ import Tangerine
 import SwiftUI
 
 struct ListView: View {
-    private let viewModel: ViewModel
+    @ObservedObject private var viewModel: ViewModel
 
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        List(viewModel.getLits()) { element in
-            CellRow(title: element.title, fetcher: element.fetcher)
+        VStack {
+            List(viewModel.list) { element in
+                CellRow(title: element.title, fetcher: element.fetcher)
+            }
+            .padding(16)
+            Button(action: {
+                self.viewModel.addElement()
+            }) {
+                Text("ADD")
+            }
+        .padding(16)
         }
     }
 }
@@ -56,7 +65,7 @@ struct Element: Identifiable {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView(viewModel: ViewModel(manager: FakeNetworkLayer()))
+        ListView(viewModel: ViewModel())
     }
 }
 #endif
